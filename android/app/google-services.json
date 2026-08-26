@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "829865412144",
+    "project_id": "archivageucb",
+    "storage_bucket": "archivageucb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829865412144:android:6bcd557c39692593ab0ff5",
+        "android_client_info": {
+          "package_name": "com.domaine.archivageucb"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBghKBLyXQgG2vtkaZkJxVdE4jhFJnxveg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
