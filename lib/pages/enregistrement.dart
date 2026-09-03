@@ -1,5 +1,4 @@
-import 'package:archivageucb/services/firebase/authentification.dart';
-import 'package:flutter/material.dart';
+import 'package:archivageucb/export_pages.dart';
 
 class Enregistrement extends StatefulWidget {
   const Enregistrement({super.key});
@@ -145,6 +144,14 @@ class _EnregistrementState extends State<Enregistrement> {
               _isLoading
                   ? Center(child: CircularProgressIndicator())
                   : ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.secondary,
+                        ),
+                        foregroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
                       onPressed: _handleRegister,
                       child: const Text("Créer un compte"),
                     ),

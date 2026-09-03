@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:archivageucb/models/archive_models.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class ArchiveService {
@@ -11,7 +12,7 @@ class ArchiveService {
   Future<File?> selectionnerDocument() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx', 'png', 'jpg'],
+      allowedExtensions: ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg', 'xls'],
     );
 
     if (result != null && result.files.single.path != null) {

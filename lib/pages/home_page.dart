@@ -1,5 +1,4 @@
-import 'package:archivageucb/pages/profil.dart';
-import 'package:flutter/material.dart';
+import 'package:archivageucb/export_pages.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

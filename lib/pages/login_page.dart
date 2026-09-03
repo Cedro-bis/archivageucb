@@ -1,8 +1,6 @@
-import 'package:archivageucb/pages/charger_fichier.dart';
-import 'package:archivageucb/pages/enregistrement.dart';
-import 'package:archivageucb/services/firebase/authentification.dart';
+import 'package:archivageucb/export_pages.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,22 +28,29 @@ class _LoginPageState extends State<LoginPage> {
         _email.text.trim(),
         _password.text.trim(),
       );
-      if (user != null && !user.emailVerified) {
+      if (user != null) {
+        await user.reload();
+        user = FirebaseAuth.instance.currentUser;
+      }
+      if (!user!.emailVerified) {
         await _auth.seDeconnecter();
         if (mounted) {
           _showSnackBar('Votre adresse email n\'est pas encore vérifié');
         }
         return;
       }
-      if (mounted && user != null) {
-        Navigator.pushReplacement(
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const ChargerFichier()),
+          (route) => false,
         );
       }
     } catch (e) {
       if (mounted) {
-        _showSnackBar('Erreur : ${e.toString().split(']').last}');
+        _showSnackBar(
+          'Echec de la connection : ${e.toString().split(']').last}',
+        );
       }
     } finally {
       if (mounted)
@@ -62,22 +67,38 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Se connecter'), elevation: 12),
+      appBar: AppBar(
+        title: Text('Se connecter'),
+        elevation: 12,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              onPressed: Provider.of<ThemeProvider>(context).changerLeTheme,
+              icon: Icon(Icons.sunny),
+            ),
+          ),
+        ],
+      ),
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(12),
             child: Column(
               children: [
-                const Icon(Icons.account_balance, size: 80, color: Colors.blue),
+                Icon(
+                  Icons.school,
+                  size: 80,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 const SizedBox(height: 16),
-                const Text(
+                Text(
                   'Archive UCB',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
                 SizedBox(height: 20),
@@ -87,12 +108,21 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 16),
                 _isLoading
                     ? const Center(child: CircularProgressIndicator())
-                    : ElevatedButton(
-                        onPressed: _traiterLentree,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.all(16),
+                    : Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(
+                              Theme.of(context).colorScheme.secondary,
+                            ),
+                            foregroundColor: WidgetStatePropertyAll(
+                              Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          onPressed: _traiterLentree,
+
+                          child: const Text('Se connecter'),
                         ),
-                        child: const Text('Se connecter'),
                       ),
                 const SizedBox(height: 16),
                 TextButton(
@@ -104,7 +134,13 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     );
                   },
-                  child: const Text('Nouveau à l\'UCB ? Créez un compte ici'),
+                  child: Text(
+                    'Nouveau à l\'UCB ? Créez un compte ici',
+                    style: TextStyle(
+                      decoration: TextDecoration.underline,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
                 ),
               ],
             ),

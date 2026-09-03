@@ -1,7 +1,4 @@
-import 'package:archivageucb/pages/home_page.dart';
-import 'package:archivageucb/pages/login_page.dart';
-import 'package:archivageucb/services/firebase/authentification.dart';
-import 'package:flutter/material.dart';
+import 'package:archivageucb/export_pages.dart';
 
 class Redirection extends StatefulWidget {
   const Redirection({super.key});

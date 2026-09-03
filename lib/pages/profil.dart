@@ -1,7 +1,5 @@
-import 'package:archivageucb/pages/login_page.dart';
-import 'package:archivageucb/services/firebase/authentification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:archivageucb/export_pages.dart';
 
 class Profil extends StatefulWidget {
   const Profil({super.key});
