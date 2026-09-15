@@ -1,4 +1,6 @@
 import 'package:archivageucb/export_pages.dart';
+import 'package:archivageucb/pages/upload_sceen.dart';
+import 'package:archivageucb/themes/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
@@ -32,21 +34,27 @@ class _LoginPageState extends State<LoginPage> {
         await user.reload();
         user = FirebaseAuth.instance.currentUser;
       }
-      if (!user!.emailVerified) {
-        await _auth.seDeconnecter();
-        if (mounted) {
-          _showSnackBar('Votre adresse email n\'est pas encore vérifié');
-        }
-        return;
-      }
+      // if (!user!.emailVerified) {
+      //   await _auth.seDeconnecter();
+      //   if (mounted) {
+      //     _showSnackBar('Votre adresse email n\'est pas encore vérifié');
+      //   }
+      //   return;
+      // }
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const ChargerFichier()),
+          MaterialPageRoute(builder: (context) => const UploadScreen()),
           (route) => false,
         );
       }
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        messageDerreurPourMail();
+      }
+      if (e.code == 'wrong-password') {
+        erreurDeMotDePasse();
+      }
       if (mounted) {
         _showSnackBar(
           'Echec de la connection : ${e.toString().split(']').last}',
@@ -58,6 +66,20 @@ class _LoginPageState extends State<LoginPage> {
           _isLoading = false;
         });
     }
+  }
+
+  void messageDerreurPourMail() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(content: Text('Email incorrect')),
+    );
+  }
+
+  void erreurDeMotDePasse() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(content: Text("Mot de pass incorrect")),
+    );
   }
 
   void _showSnackBar(String msg) {
@@ -86,11 +108,7 @@ class _LoginPageState extends State<LoginPage> {
             padding: EdgeInsets.all(12),
             child: Column(
               children: [
-                Icon(
-                  Icons.school,
-                  size: 80,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                Image.asset('lib/images/logo.png', height: 150, width: 150),
                 const SizedBox(height: 16),
                 Text(
                   'Archive UCB',
@@ -102,12 +120,20 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                _textField(_email, 'Email UCB', false),
+                MyTextFields(
+                  controller: _email,
+                  labelText: 'E-mail',
+                  obcuredText: false,
+                ),
                 SizedBox(height: 16),
-                _textField(_password, 'Mot de passe', true),
+                MyTextFields(
+                  controller: _password,
+                  labelText: 'Mot de passe',
+                  obcuredText: true,
+                ),
                 SizedBox(height: 16),
                 _isLoading
-                    ? const Center(child: CircularProgressIndicator())
+                    ? const Center(child: CircularProgressIndicator.adaptive())
                     : Container(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -147,21 +173,6 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _textField(
-    TextEditingController controller,
-    String labelText,
-    bool obcuredText,
-  ) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: labelText,
-        border: OutlineInputBorder(),
-      ),
-      obscureText: obcuredText,
     );
   }
 }

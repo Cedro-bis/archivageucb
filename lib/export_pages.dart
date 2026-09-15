@@ -1,5 +1,5 @@
+export 'package:archivageucb/components/my_text_fields.dart';
 export 'package:archivageucb/models/archive_models.dart';
-export 'package:archivageucb/pages/charger_fichier.dart';
 export 'package:archivageucb/pages/enregistrement.dart';
 export 'package:archivageucb/pages/home_page.dart';
 export 'package:archivageucb/pages/login_page.dart';

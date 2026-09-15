@@ -1,6 +1,6 @@
-import 'dart:io';
-import 'package:archivageucb/export_pages.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:archivageucb/export_pages.dart';
 
 class UploadScreen extends StatefulWidget {
   const UploadScreen({super.key});
@@ -16,28 +16,39 @@ class _UploadScreenState extends State<UploadScreen> {
   final _faculteController = TextEditingController();
   final _anneeController = TextEditingController();
 
-  File? _selectedFile;
+  // Remplacement par PlatformFile
+  PlatformFile? _selectedFile;
   bool _isLoading = false;
 
   Future<void> _pickFile() async {
-    File? file = await _archiveService.selectionnerDocument();
-    if (file != null) {
-      setState(() {
-        _selectedFile = file;
-      });
+    try {
+      PlatformFile? file = await _archiveService.selectionnerDocument();
+      if (file != null) {
+        setState(() {
+          _selectedFile = file;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur lors de la sélection : $e')),
+        );
+      }
     }
   }
 
   Future<void> _submitArchive() async {
     final user = FirebaseAuth.instance.currentUser;
+
     if (_selectedFile == null ||
-        _titreController.text.isEmpty ||
+        _titreController.text.trim().isEmpty ||
         user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
             'Veuillez joindre un document et remplir au moins le titre.',
           ),
+          backgroundColor: Colors.orange,
         ),
       );
       return;
@@ -48,13 +59,13 @@ class _UploadScreenState extends State<UploadScreen> {
     });
 
     try {
-      await _archiveService.chargerFichier(
+      await _archiveService.uploadArchive(
         file: _selectedFile!,
         titre: _titreController.text.trim(),
         description: _descController.text.trim(),
         faculte: _faculteController.text.trim(),
         anneeAcademique: _anneeController.text.trim(),
-        userId: user.uid, // Utilise l'ID Firebase réel de la session
+        userId: user.uid,
       );
 
       if (mounted) {
@@ -93,7 +104,7 @@ class _UploadScreenState extends State<UploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Archivage de Documents UCB'),
+        title: const Text('Archiver de Documents'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -152,15 +163,36 @@ class _UploadScreenState extends State<UploadScreen> {
 
                   ElevatedButton.icon(
                     onPressed: _pickFile,
-                    icon: const Icon(Icons.cloud_upload),
+                    icon: Icon(
+                      _selectedFile == null
+                          ? Icons.cloud_upload
+                          : Icons.check_circle,
+                      color: _selectedFile == null
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.secondary,
+                    ),
                     label: Text(
                       _selectedFile == null
                           ? 'Choisir le fichier'
-                          : 'Fichier sélectionné : ${_selectedFile!.path.split('/').last}',
+                          : 'Fichier : ${_selectedFile!.name}', // Affiche le nom sans planter sur le web
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: _selectedFile == null
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.secondary,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade50,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.all(16),
+                      backgroundColor: _selectedFile == null
+                          ? Theme.of(context).colorScheme.secondary
+                          : Theme.of(context).colorScheme.primary,
+                      side: BorderSide(
+                        color: _selectedFile == null
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.secondary,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 30),
@@ -168,9 +200,9 @@ class _UploadScreenState extends State<UploadScreen> {
                   ElevatedButton(
                     onPressed: _submitArchive,
                     style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.all(16),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      foregroundColor: Theme.of(context).colorScheme.secondary,
                     ),
                     child: const Text(
                       'Enregistrer et Archiver',

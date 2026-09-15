@@ -1,4 +1,5 @@
 import 'package:archivageucb/export_pages.dart';
+import 'package:archivageucb/pages/verify_email_screen.dart';
 
 class Enregistrement extends StatefulWidget {
   const Enregistrement({super.key});
@@ -34,6 +35,15 @@ class _EnregistrementState extends State<Enregistrement> {
     setState(() {
       _isLoading = true;
     });
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (builder) =>
+              VerifyEmailScreen(email: _emailController.toString()),
+        ),
+      );
+    }
     try {
       await _auth.creerUnCompte(email, password);
       await _auth.seDeconnecter();
@@ -52,29 +62,30 @@ class _EnregistrementState extends State<Enregistrement> {
         });
     }
   }
-  //  void _boiteDeDialoguePourValider() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (builder) => AlertDialog(
-  //       title: Text('Vérification envoyée'),
-  //       content: Text(
-  //         'Un e-mail a été envoyé à $_email. Cliquer sur le lien pour activer votre accès',
-  //       ),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () {
-  //             Navigator.pop(context);
-  //             Navigator.pushReplacement(
-  //               context,
-  //               MaterialPageRoute(builder: (builder) => const LoginPage()),
-  //             );
-  //           },
-  //           child: const Text('Se connecter'),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+
+  void _boiteDeDialoguePourValider() {
+    showDialog(
+      context: context,
+      builder: (builder) => AlertDialog(
+        title: Text('Vérification envoyée'),
+        content: Text(
+          'Un e-mail a été envoyé. Cliquer sur le lien pour activer votre accès',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (builder) => const LoginPage()),
+              );
+            },
+            child: const Text('Se connecter'),
+          ),
+        ],
+      ),
+    );
+  }
 
   void _showSuccessDialogue(String email) {
     showDialog(
@@ -111,34 +122,32 @@ class _EnregistrementState extends State<Enregistrement> {
         child: SingleChildScrollView(
           padding: EdgeInsets.all(12),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text('Vueillez créer un compte agent'),
-              SizedBox(height: 16),
-              TextField(
+              const Text(
+                "Bienvenus sur le site officiel des archives de l'UCB.Pour profiter de nos services, Veuillez créer un compte",
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+
+              SizedBox(height: 24),
+              MyTextFields(
                 controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'E-mail',
-                  border: OutlineInputBorder(),
-                ),
+                labelText: 'Email de l\'UCB',
+                obcuredText: false,
               ),
               SizedBox(height: 14),
-              TextField(
+              MyTextFields(
                 controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Mot de passe',
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
+                labelText: 'Mot de passe',
+                obcuredText: true,
               ),
               SizedBox(height: 14),
-              TextField(
+
+              MyTextFields(
                 controller: _confirmerController,
-                decoration: InputDecoration(
-                  labelText: 'Confirmer le mot de passe',
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
+                labelText: 'Confirmer le mot de passe',
+                obcuredText: true,
               ),
               SizedBox(height: 14),
               _isLoading
