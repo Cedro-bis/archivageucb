@@ -1,7 +1,6 @@
-import 'package:archivageucb/pages/upload_sceen.dart';
+import 'package:archivageucb/routes/route_app.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide User;
 import 'export_pages.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
@@ -23,24 +22,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
-      builder: (context, child) => MaterialApp(
+      builder: (context, child) => MaterialApp.router(
+        routerConfig: goRouter,
         debugShowCheckedModeBanner: false,
         title: 'Archivage des documents',
         theme: Provider.of<ThemeProvider>(context).themeData,
-        home: StreamBuilder<User?>(
-          stream: FirebaseAuth.instance.userChanges(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator.adaptive()),
-              );
-            }
-            if (snapshot.hasData && snapshot.data!.emailVerified) {
-              return const UploadScreen();
-            }
-            return LoginPage();
-          },
-        ),
       ),
     );
   }

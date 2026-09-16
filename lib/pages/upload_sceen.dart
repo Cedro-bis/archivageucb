@@ -1,6 +1,6 @@
+import 'package:archivageucb/export_pages.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:archivageucb/export_pages.dart';
 
 class UploadScreen extends StatefulWidget {
   const UploadScreen({super.key});
@@ -16,7 +16,17 @@ class _UploadScreenState extends State<UploadScreen> {
   final _faculteController = TextEditingController();
   final _anneeController = TextEditingController();
 
-  // Remplacement par PlatformFile
+  // Liste des catégories exactes
+  final List<String> _categories = [
+    'Document administratif',
+    'Documents académiques',
+    'Documents financiers',
+    'Livres universitaires',
+    'Travaux et projets',
+    'Document estudiantins',
+  ];
+
+  String? _selectedCategorie;
   PlatformFile? _selectedFile;
   bool _isLoading = false;
 
@@ -42,11 +52,12 @@ class _UploadScreenState extends State<UploadScreen> {
 
     if (_selectedFile == null ||
         _titreController.text.trim().isEmpty ||
+        _selectedCategorie == null ||
         user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'Veuillez joindre un document et remplir au moins le titre.',
+            'Veuillez sélectionner un fichier, indiquer un titre et choisir une catégorie.',
           ),
           backgroundColor: Colors.orange,
         ),
@@ -65,6 +76,7 @@ class _UploadScreenState extends State<UploadScreen> {
         description: _descController.text.trim(),
         faculte: _faculteController.text.trim(),
         anneeAcademique: _anneeController.text.trim(),
+        categorie: _selectedCategorie!,
         userId: user.uid,
       );
 
@@ -81,6 +93,7 @@ class _UploadScreenState extends State<UploadScreen> {
         _anneeController.clear();
         setState(() {
           _selectedFile = null;
+          _selectedCategorie = null;
         });
       }
     } catch (e) {
@@ -93,10 +106,11 @@ class _UploadScreenState extends State<UploadScreen> {
         );
       }
     } finally {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _isLoading = false;
         });
+      }
     }
   }
 
@@ -104,17 +118,14 @@ class _UploadScreenState extends State<UploadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Archiver de Documents'),
+        title: const Text('Archivage de Documents UCB'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               if (context.mounted) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
+                context.go('/login');
               }
             },
           ),
@@ -135,6 +146,28 @@ class _UploadScreenState extends State<UploadScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
+
+                  // Liste déroulante des catégories
+                  DropdownButtonFormField<String>(
+                    value: _selectedCategorie,
+                    decoration: const InputDecoration(
+                      labelText: 'Catégorie du document',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: _categories.map((String cat) {
+                      return DropdownMenuItem<String>(
+                        value: cat,
+                        child: Text(cat),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedCategorie = value;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 12),
+
                   TextField(
                     controller: _descController,
                     maxLines: 3,
@@ -144,6 +177,7 @@ class _UploadScreenState extends State<UploadScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
+
                   TextField(
                     controller: _faculteController,
                     decoration: const InputDecoration(
@@ -152,6 +186,7 @@ class _UploadScreenState extends State<UploadScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
+
                   TextField(
                     controller: _anneeController,
                     decoration: const InputDecoration(
@@ -174,7 +209,7 @@ class _UploadScreenState extends State<UploadScreen> {
                     label: Text(
                       _selectedFile == null
                           ? 'Choisir le fichier'
-                          : 'Fichier : ${_selectedFile!.name}', // Affiche le nom sans planter sur le web
+                          : 'Fichier : ${_selectedFile!.name}',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,

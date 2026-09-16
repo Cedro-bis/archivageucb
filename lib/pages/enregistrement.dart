@@ -125,6 +125,8 @@ class _EnregistrementState extends State<Enregistrement> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Image.asset('lib/images/logo.png', width: 150, height: 150),
+              SizedBox(height: 16),
               const Text(
                 "Bienvenus sur le site officiel des archives de l'UCB.Pour profiter de nos services, Veuillez créer un compte",
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),

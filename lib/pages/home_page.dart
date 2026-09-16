@@ -14,16 +14,37 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('Home'),
         actions: [
-          IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () {
-              Navigator.pushNamed(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Profil(),
-                ).settings.name!,
-              );
-            },
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: IconButton(
+              icon: Icon(Icons.account_circle),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (builder) => Profil()),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      drawer: ListView(
+        children: [
+          DrawerHeader(
+            child: Image.asset('lib/images/logo.png', width: 70, height: 70),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                spacing: 6,
+                children: [Icon(Icons.archive), Text('Archiver')],
+              ),
+              Row(
+                spacing: 6,
+                children: [Icon(Icons.logout), Text('Se déconnecter')],
+              ),
+            ],
           ),
         ],
       ),
@@ -35,18 +56,19 @@ class _HomePageState extends State<HomePage> {
               Row(
                 children: [
                   Expanded(
-                    child: _builCard(
-                      Icons.person,
-                      'Documents administratif',
-                      Colors.green,
+                    child: MyCards(
+                      icon: Icons.admin_panel_settings,
+                      color: Colors.green,
+                      title: 'Document administratifs',
+                      onTap: () {},
                     ),
                   ),
                   SizedBox(width: 10),
                   Expanded(
-                    child: _builCard(
-                      Icons.settings,
-                      'Documents académiques',
-                      Colors.orange,
+                    child: MyCards(
+                      icon: Icons.school,
+                      color: Colors.orange,
+                      title: 'Documents académiques',
                     ),
                   ),
                 ],
@@ -55,18 +77,18 @@ class _HomePageState extends State<HomePage> {
               Row(
                 children: [
                   Expanded(
-                    child: _builCard(
-                      Icons.school,
-                      'Documents financiers',
-                      Colors.red,
+                    child: MyCards(
+                      icon: Icons.balance,
+                      color: Colors.red,
+                      title: 'Document financiers',
                     ),
                   ),
                   SizedBox(width: 10),
                   Expanded(
-                    child: _builCard(
-                      Icons.book,
-                      'Documents de recherche',
-                      Colors.purple,
+                    child: MyCards(
+                      icon: Icons.book,
+                      color: Colors.brown,
+                      title: 'Livres universitaires',
                     ),
                   ),
                 ],
@@ -75,18 +97,21 @@ class _HomePageState extends State<HomePage> {
               Row(
                 children: [
                   Expanded(
-                    child: _builCard(
-                      Icons.work,
-                      'Documents de travail',
-                      Colors.grey,
+                    child: MyCards(
+                      icon: Icons.work,
+                      color: Colors.cyan,
+                      title: 'Travaux et projets',
                     ),
                   ),
                   SizedBox(width: 10),
                   Expanded(
-                    child: _builCard(
-                      Icons.folder,
-                      'Estudiantines',
-                      Colors.blue,
+                    child: MyCards(
+                      onTap: () {
+                        context.go('/docetu');
+                      },
+                      icon: Icons.folder,
+                      color: Colors.lightBlue,
+                      title: 'Documents estudiantins',
                     ),
                   ),
                 ],
@@ -94,19 +119,6 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _builCard(IconData icon, String title, MaterialColor color) {
-    return Card(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color, size: 50),
-          SizedBox(height: 10),
-          Text(title, style: TextStyle(fontSize: 18)),
-        ],
       ),
     );
   }

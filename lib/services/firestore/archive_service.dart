@@ -7,12 +7,11 @@ class ArchiveService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final SupabaseClient _supabase = Supabase.instance.client;
 
-  // Selection de fichier
   Future<PlatformFile?> selectionnerDocument() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg', 'xls'],
-      withData: true, // Requis pour le Web
+      allowedExtensions: ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg'],
+      withData: true,
     );
 
     if (result != null && result.files.isNotEmpty) {
@@ -21,22 +20,29 @@ class ArchiveService {
     return null;
   }
 
-  // Upload vers Supabase Storage + Sauvegarde métadonnées dans Firestore
   Future<void> uploadArchive({
     required PlatformFile file,
     required String titre,
     required String description,
     required String faculte,
     required String anneeAcademique,
+    required String categorie, // Nouveauté : Catégorie du document
     required String userId,
   }) async {
-    String fileName = '${DateTime.now().millisecondsSinceEpoch}_${file.name}';
-    String path = 'documents/$fileName';
+    // 1. Nettoyer le nom du fichier
+    String cleanFileName = file.name.replaceAll(RegExp(r'[^\w\.-]'), '_');
+    String fileName = '${DateTime.now().millisecondsSinceEpoch}_$cleanFileName';
 
-    // 1. Upload vers Supabase Storage (Compatible Web & Mobile)
+    // 2. Nettoyer le nom de la catégorie pour créer un sous-dossier propre sur Supabase
+    String cleanFolder = categorie
+        .replaceAll(RegExp(r'[^\w\.-]'), '_')
+        .toLowerCase();
+    String path = '$cleanFolder/$fileName';
+
+    // 3. Upload vers Supabase Storage dans le dossier de la catégorie
     if (kIsWeb || file.bytes != null) {
       await _supabase.storage
-          .from('archivageubc')
+          .from('arhivageubc')
           .uploadBinary(
             path,
             file.bytes!,
@@ -46,21 +52,22 @@ class ArchiveService {
           );
     } else {
       await _supabase.storage
-          .from('archives')
+          .from('arhivageubc')
           .upload(path, Uri.file(file.path!).toFilePath());
     }
 
-    // 2. Récupération de l'URL Publique du fichier stocké sur Supabase
+    // 4. Récupération de l'URL publique
     final String downloadUrl = _supabase.storage
-        .from('archives')
+        .from('arhivageubc')
         .getPublicUrl(path);
 
-    // 3. Sauvegarde de la référence dans Cloud Firestore (Firebase)
+    // 5. Enregistrement des métadonnées dans Firestore
     await _firestore.collection('archives').add({
       'titre': titre,
       'description': description,
       'faculte': faculte,
       'anneeAcademique': anneeAcademique,
+      'categorie': categorie, // Sauvegarde de la catégorie exacte
       'fileUrl': downloadUrl,
       'fileName': file.name,
       'userId': userId,
@@ -68,7 +75,6 @@ class ArchiveService {
     });
   }
 
-  // Helper pour le type de fichier
   String _getContentType(String? extension) {
     switch (extension?.toLowerCase()) {
       case 'pdf':

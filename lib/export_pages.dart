@@ -1,3 +1,4 @@
+export 'package:archivageucb/widgets/go_router_refresh_stream.dart';
 export 'package:archivageucb/components/my_text_fields.dart';
 export 'package:archivageucb/models/archive_models.dart';
 export 'package:archivageucb/pages/enregistrement.dart';
@@ -10,3 +11,5 @@ export 'package:archivageucb/services/firestore/archive_service.dart';
 export 'package:archivageucb/themes/theme_provider.dart';
 export 'package:flutter/material.dart';
 export 'package:archivageucb/firebase_options.dart';
+export 'package:go_router/go_router.dart';
+export 'package:archivageucb/components/my_cards.dart';

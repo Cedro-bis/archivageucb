@@ -1,6 +1,5 @@
 import 'package:archivageucb/export_pages.dart';
 import 'package:archivageucb/pages/upload_sceen.dart';
-import 'package:archivageucb/themes/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 
@@ -44,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const UploadScreen()),
+          MaterialPageRoute(builder: (context) => const HomePage()),
           (route) => false,
         );
       }
