@@ -1,3 +1,5 @@
+import 'package:archivageucb/components/my_list_tile.dart';
+import 'package:archivageucb/components/supabase_category.dart';
 import 'package:archivageucb/export_pages.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,7 +14,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text('Tableau de bord'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12.0),
@@ -33,18 +35,26 @@ class _HomePageState extends State<HomePage> {
           DrawerHeader(
             child: Image.asset('lib/images/logo.png', width: 70, height: 70),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                spacing: 6,
-                children: [Icon(Icons.archive), Text('Archiver')],
-              ),
-              Row(
-                spacing: 6,
-                children: [Icon(Icons.logout), Text('Se déconnecter')],
-              ),
-            ],
+          MyListTile(
+            icon: Icons.archive,
+            title: 'Archiver',
+            onTap: () {
+              context.go('/upload');
+            },
+          ),
+          MyListTile(
+            icon: Icons.settings,
+            title: 'Paramètres',
+            onTap: () {
+              Navigator.pushNamed(context, '/');
+            },
+          ),
+          MyListTile(
+            icon: Icons.logout,
+            title: 'Se déconnecter',
+            onTap: () {
+              context.go('/login');
+            },
           ),
         ],
       ),
@@ -59,8 +69,17 @@ class _HomePageState extends State<HomePage> {
                     child: MyCards(
                       icon: Icons.admin_panel_settings,
                       color: Colors.green,
-                      title: 'Document administratifs',
-                      onTap: () {},
+                      title: 'Documents administratifs',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SupabaseCategory(
+                              categoryName: 'Document administratif',
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   SizedBox(width: 10),
@@ -69,6 +88,16 @@ class _HomePageState extends State<HomePage> {
                       icon: Icons.school,
                       color: Colors.orange,
                       title: 'Documents académiques',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SupabaseCategory(
+                              categoryName: 'Documents académiques',
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -80,7 +109,17 @@ class _HomePageState extends State<HomePage> {
                     child: MyCards(
                       icon: Icons.balance,
                       color: Colors.red,
-                      title: 'Document financiers',
+                      title: 'Documents financiers',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SupabaseCategory(
+                              categoryName: 'Documents finaciers',
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   SizedBox(width: 10),
@@ -89,6 +128,16 @@ class _HomePageState extends State<HomePage> {
                       icon: Icons.book,
                       color: Colors.brown,
                       title: 'Livres universitaires',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SupabaseCategory(
+                              categoryName: 'livres universitaires',
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -101,13 +150,30 @@ class _HomePageState extends State<HomePage> {
                       icon: Icons.work,
                       color: Colors.cyan,
                       title: 'Travaux et projets',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SupabaseCategory(
+                              categoryName: 'Travaux et projets',
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   SizedBox(width: 10),
                   Expanded(
                     child: MyCards(
                       onTap: () {
-                        context.go('/docetu');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SupabaseCategory(
+                              categoryName: 'Document estudiantins',
+                            ),
+                          ),
+                        );
                       },
                       icon: Icons.folder,
                       color: Colors.lightBlue,

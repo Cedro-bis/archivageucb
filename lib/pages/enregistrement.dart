@@ -74,6 +74,7 @@ class _EnregistrementState extends State<Enregistrement> {
         actions: [
           TextButton(
             onPressed: () {
+              _handleRegister();
               Navigator.pop(context);
               Navigator.pushReplacement(
                 context,
@@ -163,7 +164,7 @@ class _EnregistrementState extends State<Enregistrement> {
                           Theme.of(context).colorScheme.primary,
                         ),
                       ),
-                      onPressed: _handleRegister,
+                      onPressed: _boiteDeDialoguePourValider,
                       child: const Text("Créer un compte"),
                     ),
             ],

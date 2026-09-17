@@ -6,7 +6,7 @@ class Travaux extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Travaux')),
+      appBar: AppBar(title: Text('Travaux et projet')),
       body: Center(child: Text('Travaux')),
     );
   }

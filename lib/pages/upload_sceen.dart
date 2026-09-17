@@ -121,6 +121,12 @@ class _UploadScreenState extends State<UploadScreen> {
         title: const Text('Archivage de Documents UCB'),
         actions: [
           IconButton(
+            onPressed: () {
+              context.go('/');
+            },
+            icon: Icon(Icons.home),
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
