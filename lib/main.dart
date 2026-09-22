@@ -9,9 +9,9 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Supabase.initialize(
     url: 'https://ypxvrqcjlwjnebsroopv.supabase.co',
-    publishableKey: 'sb_publishable_7Wioj9JkNh3eCBFt8hcMUQ_8alki7vE',
+    anonKey: 'sb_publishable_7Wioj9JkNh3eCBFt8hcMUQ_8alki7vE',
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

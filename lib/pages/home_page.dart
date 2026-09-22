@@ -1,5 +1,5 @@
 import 'package:archivageucb/components/my_list_tile.dart';
-import 'package:archivageucb/components/supabase_category.dart';
+import 'package:archivageucb/pages/supabase_category.dart';
 import 'package:archivageucb/export_pages.dart';
 
 class HomePage extends StatefulWidget {
@@ -115,7 +115,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => const SupabaseCategory(
-                              categoryName: 'Documents finaciers',
+                              categoryName: 'Documents financiers',
                             ),
                           ),
                         );
@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => const SupabaseCategory(
-                              categoryName: 'livres universitaires',
+                              categoryName: 'Livres universitaires',
                             ),
                           ),
                         );

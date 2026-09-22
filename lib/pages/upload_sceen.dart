@@ -25,8 +25,19 @@ class _UploadScreenState extends State<UploadScreen> {
     'Travaux et projets',
     'Document estudiantins',
   ];
+  final List<String> _faculties = [
+    'sciences agronomiques et environnement',
+    'Sciences sociales',
+    'Sciences et technologies',
+    'Medecine',
+    'Architecture et urbanisme',
+    'Droit',
+    'Economie et gestion',
+    'Université',
+  ];
 
   String? _selectedCategorie;
+  String? _selectedFaculty;
   PlatformFile? _selectedFile;
   bool _isLoading = false;
 
@@ -74,7 +85,7 @@ class _UploadScreenState extends State<UploadScreen> {
         file: _selectedFile!,
         titre: _titreController.text.trim(),
         description: _descController.text.trim(),
-        faculte: _faculteController.text.trim(),
+        faculte: _selectedFaculty!,
         anneeAcademique: _anneeController.text.trim(),
         categorie: _selectedCategorie!,
         userId: user.uid,
@@ -89,7 +100,7 @@ class _UploadScreenState extends State<UploadScreen> {
         );
         _titreController.clear();
         _descController.clear();
-        _faculteController.clear();
+        _selectedFaculty = null;
         _anneeController.clear();
         setState(() {
           _selectedFile = null;
@@ -155,7 +166,7 @@ class _UploadScreenState extends State<UploadScreen> {
 
                   // Liste déroulante des catégories
                   DropdownButtonFormField<String>(
-                    value: _selectedCategorie,
+                    initialValue: _selectedCategorie,
                     decoration: const InputDecoration(
                       labelText: 'Catégorie du document',
                       border: OutlineInputBorder(),
@@ -183,14 +194,22 @@ class _UploadScreenState extends State<UploadScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-
-                  TextField(
-                    controller: _faculteController,
-                    decoration: const InputDecoration(
+                  DropdownButtonFormField(
+                    initialValue: _selectedFaculty,
+                    decoration: InputDecoration(
                       labelText: 'Faculté concernée',
                       border: OutlineInputBorder(),
                     ),
+                    items: _faculties.map((String cat) {
+                      return DropdownMenuItem(value: cat, child: Text(cat));
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedFaculty = value;
+                      });
+                    },
                   ),
+
                   const SizedBox(height: 12),
 
                   TextField(

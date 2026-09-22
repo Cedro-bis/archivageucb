@@ -30,7 +30,9 @@ class ArchiveService {
     required String userId,
   }) async {
     // 1. Nettoyer le nom du fichier
-    String cleanFileName = file.name.replaceAll(RegExp(r'[^\w\.-]'), '_');
+    String cleanFileName = file.name
+        .replaceAll(RegExp(r'[^\w\.-]'), '_')
+        .toLowerCase();
     String fileName = '${DateTime.now().millisecondsSinceEpoch}_$cleanFileName';
 
     // 2. Nettoyer le nom de la catégorie pour créer un sous-dossier propre sur Supabase
